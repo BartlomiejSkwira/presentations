@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Rails Mountable Engine</title>
+
+		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+		<meta name="author" content="Hakim El Hattab">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="../css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/default.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- my custom styling -->
+		<link rel="stylesheet" href="my_styling.css">
+
+		<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+		<script>
+			if( window.location.search.match( /print-pdf/gi ) ) {
+				var link = document.createElement( 'link' );
+				link.rel = 'stylesheet';
+				link.type = 'text/css';
+				link.href = 'css/print/pdf.css';
+				document.getElementsByTagName( 'head' )[0].appendChild( link );
+			}
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+					<h1>Rails Mountable Engine*</h1>
+          <p>
+            <small> *plus some cat crazyness</small>
+          </p>
+          <br/>
+					<h3>Bartłomiej Skwira</h3>
+					<p>
+						Fakelook: <a href="https://www.facebook.com/bartlomiejskwira">https://www.facebook.com/bartlomiejskwira</a>
+					</p>
+				</section>
+
+        <section>
+					<h2>I work in Amberbit</h2>
+          <img src='brug/ambergold.jpg'>
+					<p>
+						..and we make... oh.... that's the old logo ;)
+            </p>
+            <p>
+              <small>*sth didn't work out</small>
+            </p>
+
+				</section>
+
+				<section>
+					<h2>..again... I work in Amberbit</h2>
+          <img src='brug/amberbit_logo.png'>
+					<p>
+						..and we make internetZ using: Ruby, Rails, Angular, CoffeeScript, HAML/Slim, SCSS etc... 
+            </p>
+            <br/>
+            <p>
+            Find us @ <a href='http://www.amberbit.com/'>http://www.amberbit.com</a>
+            </p>
+
+				</section>
+
+        <section>
+					<h2>Agenda:</h2>
+          <ol>
+            <li> Waaaaat is it? </li>
+            <li> How we can do that? </li>
+            <li> Some innards </li>
+            <li> ???????? </li>
+            <li> PROFIT </li>
+          </ol>
+
+				</section>
+
+        <section>
+					<h2>What is it?</h2>
+          <ul>
+            <li> A mini app that enhances a host app </li>
+            <li> ..so a plugin? => yeap </li>
+            <li> Examples: Devise, Rails (Engine on steroids!)</li>
+            <li> Requirements: Rails >= 3.1.0rc5 </li>
+            <li> *Can be distributed as a gem </li>
+          </ul>
+
+				</section>
+
+        <section>
+					<h2>What can we do in the engine?</h2>
+          <ul>
+            <li> create controllers/models/views/helpers/mailers etc (namespace!)
+            <li> generators work and namespace by default
+            <li> customize engine's routes in config/routes.rb
+            <li> add gem dependencies, assets, initializers, locales, rake tasks etc
+            <li><strong> TEST IT !</strong>
+            <li> use rails console (in the dummy app :P) => namespace!
+          </ul>
+				</section>
+
+        <section>
+					<h2>New feature in Rails 3.2.36 - judo cat</h2>
+          <img src='brug/judo_cat.gif'>
+				</section>
+
+
+        <section>
+					<h2>How</h2>
+          <pre><code>
+            $ rails plugin new brug --mountable
+              create
+              create  README.rdoc
+              create  Rakefile
+              create  brug.gemspec
+              create  MIT-LICENSE
+              create  .gitignore
+              create  Gemfile
+              create  app
+              create  app/controllers/brug/application_controller.rb
+              create  app/helpers/brug/application_helper.rb
+              create  app/mailers
+              create  app/models
+              create  app/views/layouts/brug/application.html.erb
+              create  app/assets/images/brug
+              create  app/assets/images/brug/.keep
+              create  config/routes.rb
+              create  lib/brug.rb
+              create  lib/tasks/brug_tasks.rake
+              create  lib/brug/version.rb
+              create  lib/brug/engine.rb
+              create  app/assets/stylesheets/brug/application.css
+              create  app/assets/javascripts/brug/application.js
+              create  bin
+              create  bin/rails
+              create  test/test_helper.rb
+              create  test/brug_test.rb
+              append  Rakefile
+              create  test/integration/navigation_test.rb
+            vendor_app  test/dummy
+                 run  bundle install
+          </code></pre>
+				</section>
+
+        <section>
+					<h2>What did we get?</h2>
+          <img src='brug/dir.jpg' style="height: 600px;">
+				</section>
+
+        <section>
+					<h2>Namespaces, namespaces everywhere !!!1</h2>
+          <pre><code>
+            module Brug
+              class ApplicationController < ActionController::Base
+              end
+            end
+
+            #also assets
+          </pre></code>
+				</section>
+
+        <section>
+					<h2>engine.rb - add configs here</h2>
+          <pre><code>
+            module Brug
+              class Engine < ::Rails::Engine
+                isolate_namespace Brug
+              end
+            end
+          </pre></code>
+				</section>
+
+
+        <section>
+					<h2>Testing? </h2>
+          <br/>
+          <div> A dummy Rails App</div>
+          <img src='brug/test.jpg' style="width: 350px; height: 360px;">
+          <br/>
+          <p><small>*Inception FTW!</small></p>
+				</section>
+
+        <section>
+					<h2>RSpec + FactoryGirl</h2>
+          <pre><code style="max-height: 600px; width: 1000px;">
+            $ rails plugin new brug -T --mountable --full --dummy-path=spec/test_app
+            #T - skip Test::Unit
+            #--full tells the generator that you want app and config directories
+
+            #Gemfile
+            source "http://rubygems.org"
+            gemspec
+            gem "rspec-rails", "~> 2.12.2"
+            gem "factory_girl_rails", "~> 4.0"
+
+            #engine.rb
+            module Brug
+              class Engine < ::Rails::Engine
+                isolate_namespace GemName
+
+                config.generators do |g|
+                  g.test_framework :rspec
+                  g.fixture_replacement :factory_girl, :dir => 'spec/factories'
+                end
+              end
+            end
+
+            $rails generate rspec:install
+          </pre></code>
+				</section>
+
+        <section>
+					<h2>Mounting the engine in routes.rb</h2>
+          <pre><code>
+            #brug/test/dummy/config/routes.rb
+            Rails.application.routes.draw do
+
+              mount Brug::Engine => "/brug" #any path here
+
+              #add this line to README of your engine/gem
+            end
+          </pre></code>
+				</section>
+
+        <section>
+					<h2>Migrations</h2>
+          <div> In the engine:</div>
+          <pre><code>
+            $ rake db:migrate
+          </pre></code>
+          <div> In the mounting app:</div>
+          <pre><code>
+            #migrations are copied to the app
+            $ rake brug:install:migrations
+          </pre></code>
+
+          <div>Load seed data</div>
+          <pre><code>
+            Brug::Engine.load_seed
+          </pre></code>
+				</section>
+
+        <section>
+					<h2>Routing.... </h2>
+          <div>...The Cat Way</div>
+          <img src='brug/routing.gif'>
+        </section>
+
+        <section>
+					<h2>Routing.... </h2>
+          <div>...The Mountable Engine Way</div>
+          <div> In the Engine</div>
+          <pre><code>
+            #engine path
+            root_url
+            #mounting app path
+            main_app.root_url
+          </pre></code>
+          <div> In the mounting app:</div>
+          <pre><code>
+            #config/routes.rb
+            mount Brug::Engine => "/brug", as: 'brug_engine'
+
+            brug_engine.root_url
+          </pre></code>
+				</section>
+
+        <section>
+					<h2>Hooking the engine in the app.... </h2>
+          <div>...The Cat Way</div>
+          <img src='brug/maru_package.gif'>
+        </section>
+
+        <section>
+					<h2>Hooking the engine in the app.... </h2>
+          <div>...The Mountable Engine Way</div>
+          <p> Locally</p>
+          <pre><code>
+            #Gemfile
+            gem 'brug', path: "/workspace/.../hidden_porn_dir/.../brug
+            #run bundle install
+
+            #routes.rb
+            mount Brug::Engine => "/brug"
+          </pre></code>
+				</section>
+
+        <section>
+					<h2>Other goodnes we can do?</h2>
+          <ul>
+            <li> use a model/controller provided by the app
+            <li> make the used model configurable => use mattr_acessor
+            <li> override models, views and controllers
+            <li> add gem dependencies via .gemspec
+          <ul>
+				</section>
+
+        <section>
+					<h2>Haml? sure!</h2>
+          <pre><code>
+            #engine.rb
+            config.generators.do |g|
+               g.template_engine :haml
+            end
+          </pre></code>
+        </section>
+
+        <section>
+					<h2>Middleware stack</h2>
+          <pre><code>
+            module MyEngine
+              class Engine < Rails::Engine
+                middleware.use SomeMiddleware
+              end
+            end
+          </pre></code>
+        </section>
+
+        <section>
+					<h2>Engine helpers in the app</h2>
+          <pre><code>
+            class ApplicationController < ActionController::Base
+              #1 selected
+              helper MyEngine::SharedEngineHelper
+              
+              #all of them
+              helper MyEngine::Engine.helpers
+            end
+          </pre></code>
+        </section>
+
+        <section>
+					<h1>Resources</h1>
+          <ul>
+            <li><a href="http://guides.rubyonrails.org/engines.html" >[Guides] Getting Started with Engines</a>
+            <li><a href="http://railscasts.com/episodes/277-mountable-engines">[RailsCast] Mountable Engines</a>
+            <li><a href="http://api.rubyonrails.org/classes/Rails/Engine.html">[Rails API] Creating an Engine</a>
+            <li><a href="https://github.com/hakimel/reveal.js">This presentation was done with Reveal.JS</a>
+          </ul>
+				</section>
+				<section>
+          <h1>Questions?</h1>
+          <img src='brug/tense.gif'>
+				</section>
+
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Parallax scrolling
+				// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+				// parallaxBackgroundSize: '2100px 900px',
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
